@@ -1,6 +1,7 @@
 The following SQL statements are querys focused on a database with multiple tables on customer orders and product quantity.
 
 
+
 1.How many many unique orders were placed in January? 
 
 SELECT COUNT(DISTINCT orderid) FROM jansales
