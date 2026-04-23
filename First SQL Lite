@@ -1,0 +1,47 @@
+SELECT COUNT(DISTINCT orderid) FROM jansales
+WHERE LENGTH(orderid)=6
+AND orderid <> 'Order ID';
+
+
+SELECT COUNT(DISTINCT orderid) FROM jansales
+WHERE LENGTH(orderid)=6
+AND orderid <> 'Order ID'
+AND product LIKE 'iPhone';
+
+
+
+SELECT DISTINCT acctnum FROM BIT_DB.customers
+INNER JOIN febsales
+ON customers.order_id = febsales.orderid
+WHERE LENGTH(orderid)=6
+AND orderid <> 'Order ID';
+
+
+
+SELECT DISTINCT product, MIN(price) FROM jansales
+WHERE length(orderid) = 6
+AND orderid <> 'Order ID'
+GROUP BY price ASC LIMIT 1;
+
+
+
+SELECT sum(quantity)*price as revenue
+,product
+FROM BIT_DB.JanSales
+GROUP BY product;
+
+
+SELECT Distinct product, SUM(quantity), SUM(quantity)*price as Revenue FROM febsales
+WHERE location in
+(SELECT location FROM febsales
+WHERE location = "548 Lincoln St, Seattle, WA 98101")
+GROUP BY product;
+
+
+
+SELECT count(acctnum), AVG(quantity*price) FROM febsales
+LEFT JOIN customers ON 
+febsales.orderid = customers.order_id
+WHERE quantity > 2
+AND length(orderid)= 6
+AND orderid<> 'Order ID';
