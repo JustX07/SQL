@@ -1,7 +1,14 @@
+The following SQL statements are querys focused on a database with multiple tables on customer orders and product quantity.
+
+
+1.How many many unique orders were placed in January? 
+
 SELECT COUNT(DISTINCT orderid) FROM jansales
 WHERE LENGTH(orderid)=6
 AND orderid <> 'Order ID';
 
+
+2.How many of those orders were for an iPhone?
 
 SELECT COUNT(DISTINCT orderid) FROM jansales
 WHERE LENGTH(orderid)=6
@@ -9,6 +16,7 @@ AND orderid <> 'Order ID'
 AND product LIKE 'iPhone';
 
 
+3.What were the customer account numbers for all the orders placed in feburary?
 
 SELECT DISTINCT acctnum FROM BIT_DB.customers
 INNER JOIN febsales
@@ -17,6 +25,7 @@ WHERE LENGTH(orderid)=6
 AND orderid <> 'Order ID';
 
 
+4.Which product was the cheapest one sold in January, and what was the price?
 
 SELECT DISTINCT product, MIN(price) FROM jansales
 WHERE length(orderid) = 6
@@ -24,12 +33,14 @@ AND orderid <> 'Order ID'
 GROUP BY price ASC LIMIT 1;
 
 
+5.What is the total revenue for each product sold in January?
 
 SELECT sum(quantity)*price as revenue
 ,product
 FROM BIT_DB.JanSales
 GROUP BY product;
 
+6.Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
 
 SELECT Distinct product, SUM(quantity), SUM(quantity)*price as Revenue FROM febsales
 WHERE location in
@@ -38,6 +49,7 @@ WHERE location = "548 Lincoln St, Seattle, WA 98101")
 GROUP BY product;
 
 
+7.How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
 
 SELECT count(acctnum), AVG(quantity*price) FROM febsales
 LEFT JOIN customers ON 
