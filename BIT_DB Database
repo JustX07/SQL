@@ -58,3 +58,56 @@ febsales.orderid = customers.order_id
 WHERE quantity > 2
 AND length(orderid)= 6
 AND orderid<> 'Order ID';
+
+
+8. This query shows how many of each type of headphones were sold in February. 
+
+SELECT SUM (quantity), product FROM febsales
+WHERE product LIKE "%headphones%"
+AND length (Orderid) =6
+AND orderid <> "Order ID"
+GROUP BY product;
+
+
+9. Shows how much each customer account spent in the month of February.
+
+SELECT SUM(quantity*price)/ COUNT(customers.acctnum) FROM febsales
+LEFT JOIN customers
+    ON customers.order_id = febsales.orderid
+    WHERE length(orderid) = 6
+    AND  orderid <> 'order ID';
+    
+
+
+10. This query shows Order ID's from Georgia who have spent at least 1000 dollars, and where the date starts with '4/1'.
+
+SELECT orderID
+FROM BIT_DB.AprSales
+WHERE orderdate LIKE '04/1%'
+AND location LIKE '%GA%'
+AND length(orderid) = 6
+AND orderid <> 'Order ID'
+GROUP BY orderID
+HAVING AVG(price) > 1000;
+
+
+
+11. Based off of already given results, this information was reversed engineered to find the query below that would give the same results.
+
+SELECT * FROM maysales
+WHERE orderid LIKE '1943_5'
+AND length(orderid) = 6
+AND orderid <> 'Order ID'
+ORDER BY orderID;
+
+
+
+12. The query below shows which product in January brought in the most revenue.
+
+SELECT product, SUM(quantity*price) FROM jansales
+WHERE LENGTH (orderid) = 6
+AND orderid <> 'Order id'
+GROUP BY product
+ORDER BY SUM(quantity*price) DESC
+LIMIT 1
+
