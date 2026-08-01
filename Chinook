@@ -1,0 +1,165 @@
+# The following queries are from a data base called chinook, used in SQL Lite studio.
+
+
+
+
+
+#1. 
+Extracting all USA based customer information using this first query.
+  
+SELECT customerid, firstname, lastname, country  FROM customers
+WHERE country <> 'USA';
+
+
+#2.
+ This querty shows all customer information that is based in Brazil.
+  
+SELECT customerid, firstname, lastname, country
+FROM customers
+WHERE country = 'Brazil';
+
+
+
+#3.
+  This query involves pulling not only patient names, but invoice information from Brazil as well
+
+SELECT firstname, lastname, invoiceid, invoicedate, billingcountry
+FROM invoices
+LEFT JOIN customers ON
+    customers.customerid = invoices.CustomerId
+    WHERE billingcountry = 'Brazil';
+    
+
+
+#4.
+  The query here lets you see all Sales agents the store has.
+SELECT lastname, firstname, title FROM employees
+WHERE title = 'Sales Support Agent';
+
+
+#5
+  The results stated in this query let you see all of the countries from the invoice table.
+
+SELECT DISTINCT billingcountry FROM invoices;
+
+
+#6.
+  First the query JOIN's the customers, employees, and invoices table, and then shows each Sales Agent's sales
+
+SELECT e.firstname, e.lastname, invoiceid FROM employees e
+INNER JOIN customers cust ON
+    cust.supportrepid = e.employeeid
+INNER JOIN invoices inv ON 
+    inv.customerid = cust.customerid
+    WHERE e.title = 'Sales Support Agent';
+    
+
+
+
+#7.
+  I wanted this query to show the linked results of customers, country, total, and the employee that helped them.
+  
+SELECT i.total, cust.firstname, cust.lastname, i.billingcountry,
+ em.firstname, em.lastname
+FROM invoices i
+JOIN customers cust ON 
+    cust.customerid = i.customerid
+JOIN employees em ON
+    cust.supportrepid = em.employeeid;
+
+
+
+#8.
+  The query here is designed to show all transactions from 2009.
+
+SELECT invoiceid, invoicedate FROM invoices
+WHERE invoicedate LIKE '2009%';
+
+
+
+#9.
+  This query shows the sum total of each invoice.
+
+SELECT SUM(total) FROM invoices 
+WHERE invoicedate BETWEEN '2009-01-01' AND '2009-12-31';
+
+
+
+#10.
+  This query was made to find the tracks linked to each invoice line id.
+  
+SELECT invoicelineid, tracks.name FROM invoice_items ii
+LEFT JOIN tracks on
+    tracks.trackid = ii.trackid;
+    
+
+
+#11.
+  Since making the last query, I linked the 
+SELECT invoicelineid, tracks.name, artists.name FROM invoice_items ii
+INNER JOIN tracks ON
+    tracks.trackid = ii.trackid
+INNER JOIN albums ON
+    albums.albumid = tracks.AlbumId
+INNER JOIN artists ON
+    artists.artistid = albums.artistid;
+    
+
+
+SELECT t.name Song, a.title Album, m.name Media, g.name  Genre
+FROM tracks t
+LEFT join albums a
+    ON a.albumid = t.albumid
+LEFT JOIN media_types m
+    ON m.mediatypeid= t.mediatypeid
+LEFT JOIN genres g
+    ON g.genreid = t.genreid;
+
+
+SELECT Billingcountry, SUM(total) AS Spendingamount FROM invoices
+GROUP BY billingcountry
+ORDER BY SUM(total) DESC;
+
+
+
+
+SELECT firstname, lastname, Billingcity, BillingCountry, Sum(total) FROM customers
+LEFT JOIN invoices 
+ON customers.customerid = invoices.customerid
+GROUP BY customers.CustomerId;
+
+
+
+WITH GenreSales AS (
+SELECT genres.name AS Genre, invoices.BillingCountry AS Country, 
+SUM(invoice_items.Quantity) AS Total_Sold FROM genres
+JOIN tracks ON 
+    tracks.GenreId = genres.GenreId
+JOIN invoice_items ON 
+    invoice_items.trackid = tracks.TrackId
+JOIN invoices ON 
+    invoices.InvoiceId= invoice_items.invoiceid
+GROUP BY invoices.BillingCountry, genres.Name),
+RankedGenres AS (
+    SELECT Genre, 
+        Country, 
+        Total_Sold,
+        RANK() OVER (PARTITION BY Country
+        ORDER BY Total_Sold DESC) AS GenreRank FROM GenreSales)
+SELECT Country,
+        Genre,
+        Total_Sold
+FROM RankedGenres
+WHERE GenreRank = 1
+ORDER BY Country;
+
+
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+WHERE emp.Title = 'Sales Support Agent' 
+GROUP BY emp.FirstName;
