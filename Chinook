@@ -95,7 +95,8 @@ LEFT JOIN tracks on
 
 
 #11.
-  Since making the last query, I linked the 
+  This query delivers the results of the purchased track name and artists name for each invoice line id.
+
 SELECT invoicelineid, tracks.name, artists.name FROM invoice_items ii
 INNER JOIN tracks ON
     tracks.trackid = ii.trackid
@@ -105,6 +106,9 @@ INNER JOIN artists ON
     artists.artistid = albums.artistid;
     
 
+
+#12.
+Query 12 pulls out the track, genre, album, and media information to clearly be on display.
 
 SELECT t.name Song, a.title Album, m.name Media, g.name  Genre
 FROM tracks t
@@ -116,12 +120,19 @@ LEFT JOIN genres g
     ON g.genreid = t.genreid;
 
 
+
+
+#13.
+To get the total of how much each country spent in total, this query was created to return the desired results.
+
 SELECT Billingcountry, SUM(total) AS Spendingamount FROM invoices
 GROUP BY billingcountry
 ORDER BY SUM(total) DESC;
 
 
 
+#14.
+This lets you see the customer, how much they spent and where the customer is from.
 
 SELECT firstname, lastname, Billingcity, BillingCountry, Sum(total) FROM customers
 LEFT JOIN invoices 
@@ -129,6 +140,9 @@ ON customers.customerid = invoices.customerid
 GROUP BY customers.CustomerId;
 
 
+
+#15.
+This specific query pulls up each country and the best selling genre in that country as well.
 
 WITH GenreSales AS (
 SELECT genres.name AS Genre, invoices.BillingCountry AS Country, 
@@ -153,6 +167,9 @@ FROM RankedGenres
 WHERE GenreRank = 1
 ORDER BY Country;
 
+
+#16.
+To see which sales agent had the most total sales, this query was created to and successfully came back with the desired results.
 
 SELECT emp.FirstName, emp.LastName,
 ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
